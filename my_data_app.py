@@ -1,47 +1,91 @@
 import streamlit as st
 import pandas as pd
 
+# ========== CONFIG ==========
+st.set_page_config(page_title="Motocycles Data App", layout="wide")
 
-st.markdown("<h1 style='text-align: center; color: black;'>MY DATA APP</h1>", unsafe_allow_html=True)
-
+# ========== DARK MODE STYLE ==========
 st.markdown("""
-This app allows you to download scraped data on motocycles from expat-dakar 
-* **Python libraries:** base64, pandas, streamlit
-* **Data source:** [Expat-Dakar](https://www.expat-dakar.com/).
-""")
-
-
-# Fonction de loading des données
-def load_(dataframe, title, key) :
-    st.markdown("""
     <style>
-    div.stButton {text-align:center}
-    </style>""", unsafe_allow_html=True)
+    body {
+        background-color: #121212;
+        color: #ffffff;
+    }
+    .title {
+        font-size: 36px;
+        color: #ffffff;
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    .description {
+        font-size: 18px;
+        color: #dcdcdc;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .stButton>button {
+        background-color: #1f77b4;
+        color: white;
+        font-size: 14px;
+        border-radius: 8px;
+        height: 3em;
+        width: 100%;
+        margin: 5px 0px;
+        transition: 0.3s;
+        border: none;
+    }
+    .stButton>button:hover {
+        background-color: #166ca0;
+    }
+    .stSidebar {
+        background-color: #1e1e1e;
+    }
+    hr {
+        margin-top: 50px;
+        border-color: #444;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
-    if st.button(title,key):
-      
-        st.subheader('Display data dimension')
-        st.write('Data dimension: ' + str(dataframe.shape[0]) + ' rows and ' + str(dataframe.shape[1]) + ' columns.')
-        st.dataframe(dataframe)
+# ========== TITRE ET DESCRIPTION ==========
+st.markdown("<div class='title'>🏍️ MY DATA APP</div>", unsafe_allow_html=True)
+st.markdown("<div class='description'>Explore motorcycle listings scraped from Expat-Dakar</div>", unsafe_allow_html=True)
 
-# définir quelques styles liés aux box
-st.markdown('''<style> .stButton>button {
-    font-size: 12px;
-    height: 3em;
-    width: 25em;
-}</style>''', unsafe_allow_html=True)
+# ========== SIDEBAR ==========
+with st.sidebar:
+    st.image("https://www.expat-dakar.com/assets/logo.png", width=150)
+    st.markdown("## 📂 Choisissez un dataset")
+    st.write("Cliquez sur un bouton pour afficher les données.")
+    st.markdown("---")
+    st.markdown("### 🛠️ Technologies utilisées")
+    st.markdown("""
+    * 📦 **Librairies Python**: base64, pandas, streamlit  
+    * 🌐 **Source**: [Expat-Dakar](https://www.expat-dakar.com/)
+    """)
 
-          
-# Charger les données 
-load_(pd.read_csv('data/motos_scooters1.csv'), 'Motocycles data 1', '1')
-load_(pd.read_csv('data/motos_scooters2.csv'), 'Motocycles data 2', '2')
-load_(pd.read_csv('data/motos_scooters3.csv'), 'Motocycles data 3', '3')
-load_(pd.read_csv('data/motos_scooters4.csv'), 'Motocycles data 4', '4')
-load_(pd.read_csv('data/motos_scooters5.csv'), 'Motocycles data 5', '5')
+# ========== FONCTION D'AFFICHAGE ==========
+def load_(dataframe, title, key):
+    if st.button(title, key):
+        with st.expander(f"🔍 Aperçu de {title}"):
+            st.write(f"**Dimensions**: {dataframe.shape[0]} lignes × {dataframe.shape[1]} colonnes")
+            st.dataframe(dataframe)
 
+# ========== AFFICHAGE EN 2 COLONNES ==========
+col1, col2 = st.columns(2)
 
+with col1:
+    load_(pd.read_csv('data/motos_scooters1.csv'), '📄 Motocycles data 1', '1')
+    load_(pd.read_csv('data/motos_scooters3.csv'), '📄 Motocycles data 3', '3')
+    load_(pd.read_csv('data/motos_scooters5.csv'), '📄 Motocycles data 5', '5')
 
+with col2:
+    load_(pd.read_csv('data/motos_scooters2.csv'), '📄 Motocycles data 2', '2')
+    load_(pd.read_csv('data/motos_scooters4.csv'), '📄 Motocycles data 4', '4')
 
- 
-
-
+# ========== FOOTER ==========
+st.markdown("""<hr>
+<div style='text-align: center; color: #aaaaaa; font-size: 14px;'>
+    Made with ❤️ by Alioune Mbodji – Powered by Streamlit
+</div>
+""", unsafe_allow_html=True)
