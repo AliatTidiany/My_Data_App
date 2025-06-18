@@ -8,10 +8,11 @@ pipeline {
 
     stages {
         stage('Cloner le dépôt') {
-            steps {
-                git 'https://github.com/AliatTidiany/My_Data_App.git'
-            }
-        }
+    steps {
+        git branch: 'main', url: 'https://github.com/AliatTidiany/My_Data_App.git'
+    }
+}
+
 
         stage('Construire l’image') {
             steps {
