@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     triggers {
-        githubPush()  // Déclenche le pipeline à chaque push GitHub
+        githubPush()
     }
 
     environment {
@@ -11,32 +11,30 @@ pipeline {
     }
 
     stages {
-        stage('Cloner le dépôt') {
-            steps {
-                git branch: 'main', url: 'https://github.com/AliatTidiany/My_Data_App.git'
-            }
-        }
-
         stage('Construire l’image') {
             steps {
+                echo "Construction de l’image Docker"
                 sh 'docker build -t $IMAGE_NAME .'
             }
         }
 
         stage('Connexion à Docker Hub') {
             steps {
+                echo "Connexion à Docker Hub"
                 sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
             }
         }
 
         stage('Pousser l’image') {
             steps {
+                echo "Envoi de l’image vers Docker Hub"
                 sh 'docker push $IMAGE_NAME'
             }
         }
 
         stage('Déployer') {
             steps {
+                echo "Déploiement de l’application"
                 sh 'docker stop my_data_app || true && docker rm my_data_app || true'
                 sh 'docker run -d --name my_data_app -p 8501:8501 $IMAGE_NAME'
             }
@@ -51,8 +49,13 @@ pipeline {
         }
         failure {
             mail to: 'ambodj92@gmail.com',
-                 subject: "Déploiement échoué",
+                 subject: "Échec du déploiement",
                  body: "Une erreur est survenue pendant le pipeline Jenkins."
         }
     }
 }
+// This Jenkinsfile defines a pipeline for building, pushing, and deploying a Docker image.
+// It includes stages for building the Docker image, logging into Docker Hub, pushing the image,
+// and deploying the application. It also includes post actions to send email notifications on success or failure.
+// The pipeline is triggered by a GitHub push event and uses environment variables for credentials and image name.
+// The Docker commands are executed in a shell environment, and the deployment stage ensures that any existing container
