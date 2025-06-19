@@ -54,8 +54,3 @@ pipeline {
         }
     }
 }
-// This Jenkinsfile defines a pipeline for building, pushing, and deploying a Docker image.
-// It includes stages for building the Docker image, logging into Docker Hub, pushing the image,
-// and deploying the application. It also includes post actions to send email notifications on success or failure.
-// The pipeline is triggered by a GitHub push event and uses environment variables for credentials and image name.
-// The Docker commands are executed in a shell environment, and the deployment stage ensures that any existing container
