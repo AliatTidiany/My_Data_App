@@ -9,20 +9,19 @@ pipeline {
     stages {
         stage('Nettoyer workspace') {
             steps {
-                deleteDir()  // Supprime tout le contenu du workspace
+                deleteDir()
             }
         }
 
         stage('Checkout') {
             steps {
-                checkout scm  // Jenkins clone le dépôt automatiquement
-                sh 'ls -la'   // Vérifie que le contenu est bien là
+                git url: 'https://github.com/AliatTidiany/My_Data_App.git', branch: 'main'
             }
         }
 
         stage('Construire l’image') {
             steps {
-                sh 'docker build -t $IMAGE_NAME .'  // On est dans le workspace cloné
+                sh 'docker build -t $IMAGE_NAME .'
             }
         }
 
