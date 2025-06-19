@@ -1,9 +1,13 @@
 pipeline {
     agent any
 
+    triggers {
+        githubPush()  // Déclenche le pipeline à chaque push GitHub
+    }
+
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-projetGroup4')  // ID des identifiants Jenkins
-        IMAGE_NAME = 'attidiany/my_data_app'                // image DockerHub
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-projetGroup4')
+        IMAGE_NAME = 'attidiany/my_data_app'
     }
 
     stages {
@@ -41,7 +45,7 @@ pipeline {
 
     post {
         success {
-            mail to: 'ambodj92@gmail.com, diopmadicke351@gmail.com',
+            mail to: 'ambodj92@gmail.com,diopmadicke351@gmail.com',
                  subject: "Déploiement réussi",
                  body: "Votre application a été déployée avec succès."
         }
@@ -52,7 +56,3 @@ pipeline {
         }
     }
 }
-// Ce Jenkinsfile est utilisé pour automatiser le processus de CI/CD pour l'application My_Data_App.
-// Il inclut les étapes de clonage du dépôt, de construction de l'image Docker,
-// de connexion à Docker Hub, de poussée de l'image et de déploiement de l'application.
-// Les notifications par e-mail sont envoyées en cas de succès ou d'échec du
