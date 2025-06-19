@@ -41,15 +41,14 @@ pipeline {
     }
 
     post {
-        success {
-            mail to: 'ambodj92@gmail.com', 'diopmadicke351@gmail.com'
-                 subject: 'Déploiement réussi',
-                 body: "Votre application a été déployée avec succès"
-        }
-        failure {
-            mail to: 'ambodj92@gmail.com',
-                 subject: 'Déploiement échoué',
-                 body: "Une erreur est survenue pendant le pipeline Jenkins."
-        }
+    success {
+        mail to: 'ambodj92@gmail.com, diopmadicke351@gmail.com',
+             subject: "Déploiement réussi",
+             body: "Votre application a été déployée avec succès."
+    }
+    failure {
+        mail to: 'ambodj92@gmail.com',
+             subject: "Déploiement échoué",
+             body: "Une erreur est survenue pendant le pipeline Jenkins."
     }
 }
