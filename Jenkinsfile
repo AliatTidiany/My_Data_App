@@ -8,11 +8,10 @@ pipeline {
 
     stages {
         stage('Cloner le dépôt') {
-    steps {
-        git branch: 'main', url: 'https://github.com/AliatTidiany/My_Data_App.git'
-    }
-}
-
+            steps {
+                git branch: 'main', url: 'https://github.com/AliatTidiany/My_Data_App.git'
+            }
+        }
 
         stage('Construire l’image') {
             steps {
@@ -41,14 +40,19 @@ pipeline {
     }
 
     post {
-    success {
-        mail to: 'ambodj92@gmail.com, diopmadicke351@gmail.com',
-             subject: "Déploiement réussi",
-             body: "Votre application a été déployée avec succès."
-    }
-    failure {
-        mail to: 'ambodj92@gmail.com',
-             subject: "Déploiement échoué",
-             body: "Une erreur est survenue pendant le pipeline Jenkins."
+        success {
+            mail to: 'ambodj92@gmail.com, diopmadicke351@gmail.com',
+                 subject: "Déploiement réussi",
+                 body: "Votre application a été déployée avec succès."
+        }
+        failure {
+            mail to: 'ambodj92@gmail.com',
+                 subject: "Déploiement échoué",
+                 body: "Une erreur est survenue pendant le pipeline Jenkins."
+        }
     }
 }
+// Ce Jenkinsfile est utilisé pour automatiser le processus de CI/CD pour l'application My_Data_App.
+// Il inclut les étapes de clonage du dépôt, de construction de l'image Docker,
+// de connexion à Docker Hub, de poussée de l'image et de déploiement de l'application.
+// Les notifications par e-mail sont envoyées en cas de succès ou d'échec du
