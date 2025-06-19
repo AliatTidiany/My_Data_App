@@ -1,9 +1,7 @@
 pipeline {
     agent any
 
-    triggers {
-        githubPush()
-    }
+    
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-projetGroup4')
