@@ -44,7 +44,7 @@ pipeline {
         success {
             mail to: 'ambodj92@gmail.com', 'diopmadicke351@gmail.com'
                  subject: 'Déploiement réussi',
-                 body: "Votre application a été déployée avec succès 🎉"
+                 body: "Votre application a été déployée avec succès"
         }
         failure {
             mail to: 'ambodj92@gmail.com',
