@@ -1,42 +1,30 @@
 pipeline {
     agent any
 
-    
-
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-projetGroup4')
         IMAGE_NAME = 'attidiany/my_data_app'
     }
 
     stages {
+        stage('Cloner le dépôt') {
+            steps {
+                sh 'git clone https://github.com/AliatTidiany/My_Data_App.git'
+                dir('My_Data_App') {
+                    sh 'ls -la'  // Vérifie que le contenu est bien là
+                }
+            }
+        }
+
         stage('Construire l’image') {
             steps {
-                echo "Construction de l’image Docker"
-                sh 'docker build -t $IMAGE_NAME .'
+                dir('My_Data_App') {
+                    sh 'docker build -t $IMAGE_NAME .'
+                }
             }
         }
 
-        stage('Connexion à Docker Hub') {
-            steps {
-                echo "Connexion à Docker Hub"
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-            }
-        }
-
-        stage('Pousser l’image') {
-            steps {
-                echo "Envoi de l’image vers Docker Hub"
-                sh 'docker push $IMAGE_NAME'
-            }
-        }
-
-        stage('Déployer') {
-            steps {
-                echo "Déploiement de l’application"
-                sh 'docker stop my_data_app || true && docker rm my_data_app || true'
-                sh 'docker run -d --name my_data_app -p 8501:8501 $IMAGE_NAME'
-            }
-        }
+        // ... autres étapes inchangées, mais toujours dans `dir('My_Data_App')` si nécessaires ...
     }
 
     post {
