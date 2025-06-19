@@ -7,24 +7,43 @@ pipeline {
     }
 
     stages {
-        stage('Cloner le dépôt') {
+        stage('Nettoyer workspace') {
             steps {
-                sh 'git clone https://github.com/AliatTidiany/My_Data_App.git'
-                dir('My_Data_App') {
-                    sh 'ls -la'  // Vérifie que le contenu est bien là
-                }
+                deleteDir()  // Supprime tout le contenu du workspace
+            }
+        }
+
+        stage('Checkout') {
+            steps {
+                checkout scm  // Jenkins clone le dépôt automatiquement
+                sh 'ls -la'   // Vérifie que le contenu est bien là
             }
         }
 
         stage('Construire l’image') {
             steps {
-                dir('My_Data_App') {
-                    sh 'docker build -t $IMAGE_NAME .'
-                }
+                sh 'docker build -t $IMAGE_NAME .'  // On est dans le workspace cloné
             }
         }
 
-        // ... autres étapes inchangées, mais toujours dans `dir('My_Data_App')` si nécessaires ...
+        stage('Connexion à Docker Hub') {
+            steps {
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+            }
+        }
+
+        stage('Pousser l’image') {
+            steps {
+                sh 'docker push $IMAGE_NAME'
+            }
+        }
+
+        stage('Déployer') {
+            steps {
+                sh 'docker stop my_data_app || true && docker rm my_data_app || true'
+                sh 'docker run -d --name my_data_app -p 8501:8501 $IMAGE_NAME'
+            }
+        }
     }
 
     post {
@@ -40,5 +59,3 @@ pipeline {
         }
     }
 }
-#ggg
-#hhh
