@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-projetGroup4')
         IMAGE_NAME = 'attidiany/my_data_app'
     }
 
@@ -13,7 +12,7 @@ pipeline {
             }
         }
 
-        stage('Checkout') {
+        stage('Cloner le dépôt') {
             steps {
                 git url: 'https://github.com/AliatTidiany/My_Data_App.git', branch: 'main'
             }
@@ -21,26 +20,25 @@ pipeline {
 
         stage('Construire l’image') {
             steps {
-                sh 'docker build -t $IMAGE_NAME .'
+                script {
+                    dockerImage = docker.build(IMAGE_NAME)
+                }
             }
         }
 
         stage('Connexion à Docker Hub') {
             steps {
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-projetGroup4', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
+                }
             }
         }
 
         stage('Pousser l’image') {
             steps {
-                sh 'docker push $IMAGE_NAME'
-            }
-        }
-
-        stage('Déployer') {
-            steps {
-                sh 'docker stop my_data_app || true && docker rm my_data_app || true'
-                sh 'docker run -d --name my_data_app -p 8501:8501 $IMAGE_NAME'
+                script {
+                    dockerImage.push()
+                }
             }
         }
     }
